@@ -1,5 +1,6 @@
 package com.aml.backend.dto;
 
+import com.aml.backend.model.Role;
 import lombok.Data;
 
 @Data
@@ -10,5 +11,6 @@ public class RegisterRequest {
     private String password;
     private String phone;
     private String sex;
-    private String birthdate; // keep as String, then parse to LocalDate in controller
+    private String birthdate;
+    private Role role;
 }

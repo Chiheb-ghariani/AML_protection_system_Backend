@@ -1,6 +1,7 @@
 package com.aml.backend.controller;
 
 import com.aml.backend.dto.RegisterRequest;
+import com.aml.backend.model.Role;
 import com.aml.backend.model.User;
 import com.aml.backend.repository.UserRepository;
 import com.aml.backend.security.JwtUtil;
@@ -23,7 +24,6 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Register new user (signup) – hashes password
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         System.out.println("📌 Incoming request: " + request);
@@ -35,6 +35,7 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhone(request.getPhone());
         user.setSex(request.getSex());
+        user.setRole(request.getRole() != null ? request.getRole() : Role.CUSTOMER);
 
         if (request.getBirthdate() != null) {
             try {
@@ -44,14 +45,14 @@ public class AuthController {
             }
         }
 
-        userRepository.save(user);
-
-        return ResponseEntity.ok("User registered successfully");
+        try {
+            userRepository.save(user);
+            return ResponseEntity.ok("User registered successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid role specified");
+        }
     }
 
-
-
-    // Login – checks hashed password and returns JWT (as plain text)
     @PostMapping("/login")
     public String login(@RequestBody User loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail());

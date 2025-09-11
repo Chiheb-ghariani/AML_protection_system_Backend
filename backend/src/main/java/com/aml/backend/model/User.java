@@ -30,5 +30,9 @@ public class User {
 
     private String sex;
 
-    private LocalDate birthdate; // ✅ cleaner date handling
+    private LocalDate birthdate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
 }

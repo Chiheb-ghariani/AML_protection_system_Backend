@@ -12,8 +12,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder; // Removed 'final' and separate @Autowired
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -46,7 +45,6 @@ public class UserService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
 
     public void encodeExistingPasswords() {
         List<User> users = userRepository.findAll();
