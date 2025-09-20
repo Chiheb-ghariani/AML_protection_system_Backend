@@ -1,7 +1,10 @@
 package com.aml.backend.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 import java.time.LocalDate;
 
 @Entity
@@ -35,4 +38,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
+
+    @Column(unique = true, nullable = false)
+    private String nationalId;
+
+    @Column(name = "account_number")
+    private String accountNumber; // New field
 }

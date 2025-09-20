@@ -12,7 +12,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private PasswordEncoder passwordEncoder; // Removed 'final' and separate @Autowired
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -20,39 +20,21 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Save user with encoded password
-    public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash password
-        return userRepository.save(user);
-    }
-
-    // Get all users
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Get user by ID
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    // Delete user by ID
+    public User saveUser(User user) {
+        // Encode password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-
-    // Get user by email (for login)
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    public void encodeExistingPasswords() {
-        List<User> users = userRepository.findAll();
-        for (User user : users) {
-            if (!user.getPassword().startsWith("$2a$")) { // not encoded yet
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
-            }
-        }
     }
 }
